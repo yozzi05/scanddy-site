@@ -3,6 +3,7 @@ import { Golos_Text, Literata } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LeadProvider } from "@/components/LeadForm";
+import { isPreview } from "@/data/company";
 import "./globals.css";
 
 const literata = Literata({
@@ -27,6 +28,8 @@ export const metadata: Metadata = {
   },
   description:
     "Мягкая мебель Scanddy собственного производства. Подберём модель и комплектацию под ваш интерьер и рассчитаем стоимость.",
+  // Предпросмотр не индексируется, пока компания не подтвердила фото и контакты
+  robots: isPreview ? { index: false, follow: false } : undefined,
 };
 
 export const viewport: Viewport = {

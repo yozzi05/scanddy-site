@@ -34,9 +34,9 @@ export function Header() {
           <ul>
             {navLinks.map((l) => (
               <li key={l.href}>
-                <a href={l.href} aria-current={pathname === l.href ? "page" : undefined}>
+                <Link href={l.href} aria-current={pathname.replace(/\/$/, "") === l.href ? "page" : undefined}>
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -65,9 +65,9 @@ export function Header() {
           <ul>
             {navLinks.map((l) => (
               <li key={l.href}>
-                <a href={l.href} onClick={() => setOpen(false)}>
+                <Link href={l.href} onClick={() => setOpen(false)}>
                   {l.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

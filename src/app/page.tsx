@@ -2,6 +2,7 @@ import Image, { getImageProps } from "next/image";
 import { ModelCard } from "@/components/ModelCard";
 import { Arrow, LeadButton } from "@/components/LeadForm";
 import { company, isVisible } from "@/data/company";
+import { asset } from "@/lib/asset";
 import { editorialImages, featuredModelIds, getModel, type FurnitureModel } from "@/data/models";
 
 const featured = featuredModelIds
@@ -27,11 +28,11 @@ function Hero() {
   const common = { alt: hero.alt, sizes: "(min-width: 1440px) 1344px, 100vw", priority: true };
   const {
     props: { srcSet: desktop },
-  } = getImageProps({ ...common, ...hero.desktop, quality: 82 });
+  } = getImageProps({ ...common, ...hero.desktop, src: asset(hero.desktop.src) });
   const {
     props: { srcSet: mobile },
-  } = getImageProps({ ...common, ...hero.mobile, quality: 80 });
-  const { props: img } = getImageProps({ ...common, ...hero.desktop, quality: 82 });
+  } = getImageProps({ ...common, ...hero.mobile, src: asset(hero.mobile.src) });
+  const { props: img } = getImageProps({ ...common, ...hero.desktop, src: asset(hero.desktop.src) });
 
   return (
     <section className="hero" aria-labelledby="hero-title">
@@ -84,7 +85,7 @@ function Collection() {
           <a className="category category--wide" href="#sofas">
             <div className="category__media">
               <Image
-                src={sofaImg.src}
+                src={asset(sofaImg.src)}
                 alt={sofaImg.alt}
                 fill
                 sizes="(min-width: 768px) 58vw, 100vw"
@@ -102,7 +103,7 @@ function Collection() {
           <a className="category category--narrow" href="#armchairs">
             <div className="category__media">
               <Image
-                src={chairImg.src}
+                src={asset(chairImg.src)}
                 alt={chairImg.alt}
                 fill
                 sizes="(min-width: 768px) 40vw, 100vw"
@@ -159,7 +160,7 @@ function Consultation() {
     <section className="consult" aria-labelledby="consult-title">
       <div className="consult__inner">
         <div className="consult__media">
-          <Image src={img.src} alt={img.alt} fill sizes="(min-width: 1200px) 60vw, (min-width: 768px) 50vw, 100vw" />
+          <Image src={asset(img.src)} alt={img.alt} fill sizes="(min-width: 1200px) 60vw, (min-width: 768px) 50vw, 100vw" />
         </div>
         <div className="consult__text">
           <p className="eyebrow eyebrow--light">Персональный подбор</p>

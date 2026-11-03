@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { formatDimensions, type FurnitureModel } from "@/data/models";
+import { asset } from "@/lib/asset";
 import { LeadButton } from "./LeadForm";
 
 export function ModelCard({ model }: { model: FurnitureModel }) {
@@ -12,7 +13,7 @@ export function ModelCard({ model }: { model: FurnitureModel }) {
           style={image.zoom ? ({ "--zoom": image.zoom } as React.CSSProperties) : undefined}
         >
           <Image
-            src={image.src}
+            src={asset(image.src)}
             alt={image.alt}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"

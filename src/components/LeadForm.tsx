@@ -22,8 +22,12 @@ export function useLead(): LeadContextValue {
   return ctx;
 }
 
-/** Приём заявок подключается переменной окружения на сервере и флагом здесь */
-const leadsEnabled = process.env.NEXT_PUBLIC_LEADS_ENABLED === "true";
+/**
+ * Сайт собирается статикой, поэтому заявка уходит напрямую на внешний
+ * приёмник (CRM, форма-сервис, бот). Пока адрес не задан — режим предпросмотра.
+ */
+const leadsEndpoint = process.env.NEXT_PUBLIC_LEADS_ENDPOINT || "";
+const leadsEnabled = Boolean(leadsEndpoint);
 
 const titles: Record<LeadType, string> = {
   selection: "Помочь с выбором",
@@ -85,32 +89,32 @@ export function LeadProvider({ children }: { children: React.ReactNode }) {
     setFieldError(error);
     if (error) return;
 
+    if (!leadsEnabled) {
+      setStatus({ kind: "error", message: "Заявка не отправлена: приём заявок на сайте ещё не подключён." });
+      return;
+    }
+
     setStatus({ kind: "sending" });
     try {
-      const res = await fetch("/api/lead", {
+      const res = await fetch(leadsEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           type,
           contactKind,
-          contact: contactValue,
+          typeLabel: leadTypes[type],
+          contact: contactKind === "phone" ? `+7${phoneDigits(contactValue)}` : contactValue.trim(),
           message: message.trim() || undefined,
-          modelId: type === "model" ? modelId : undefined,
+          modelId: type === "model" ? model?.id : undefined,
+          modelName: type === "model" ? model?.name : undefined,
         }),
       });
-      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
-      if (res.ok && data?.ok) {
+      if (res.ok) {
         setStatus({ kind: "sent" });
         setMessage("");
         return;
       }
-      setStatus({
-        kind: "error",
-        message:
-          data?.error === "not_configured"
-            ? "Заявка не отправлена: приём заявок на сайте ещё не подключён."
-            : "Не удалось отправить заявку. Попробуйте ещё раз чуть позже.",
-      });
+      setStatus({ kind: "error", message: "Не удалось отправить заявку. Попробуйте ещё раз чуть позже." });
     } catch {
       setStatus({ kind: "error", message: "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз." });
     }
